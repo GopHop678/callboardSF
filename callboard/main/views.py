@@ -53,7 +53,7 @@ class AdvertisementCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-class ResponseCreate(LoginRequiredMixin, CreateView):
+class ResponseCreate(UserPassesTestMixin, LoginRequiredMixin, CreateView):
     form_class = ResponseForm
     model = Response
     template_name = 'main/respond.html'
@@ -64,6 +64,11 @@ class ResponseCreate(LoginRequiredMixin, CreateView):
         post = self.kwargs.get('pk')
         form.instance.post = Advertisement.objects.get(id=post)
         return super().form_valid(form)
+
+    def test_func(self):
+        post_id = self.kwargs.get('pk')
+        post = Advertisement.objects.get(pk=post_id)
+        return self.request.user != post.author
 
     def get_success_url(self):
         return reverse_lazy('details', kwargs={'pk': self.kwargs['pk']})
