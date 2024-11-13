@@ -1,0 +1,21 @@
+{% extends 'main/header.html' %}
+
+{% block title %} New post {% endblock %}
+
+{% block body %}
+<div class="content_wrapper">
+    <div class="create_post_wrapper">
+        <div class="form_wrapper">
+            <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form.media }}
+                    Выберите категорию: {{ form.category }}<br>
+                    Укажите название: {{ form.title }}<br>
+                    Содержание: {{ form.content|safe }}<br>
+                <input type="submit" value="Готово" />
+            </form>
+        </div>
+            <img src="/static/images/feather_ink_pixel.png">
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'main/header.html' %}
+
+{% block title %} Вход {% endblock %}
+
+{% block body %}
+<div class="accounts_content">
+    <form class="login_form" method="post">
+    {% csrf_token %}
+<!--    {{ form.as_p }}-->
+    <label>Username:</label>
+    <input type="text" name="username" required><br>
+    <label>Password:</label>
+    <input type="password" name="password" required><br>
+
+    <input type="submit" value="Войти">
+</form>
+</div>
+{% endblock %}

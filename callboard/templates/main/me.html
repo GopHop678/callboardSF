@@ -1,0 +1,58 @@
+{% extends 'main/header.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %} Posts page {% endblock %}
+
+{% block body %}
+{% if subscribed %}
+<div class="me_page_filter_form_wrapper">
+    <form class="subscription_form" method="post">
+        {% csrf_token %}
+        <label style="color: black;">Получать новостную рассылку?
+        {% if subscribed.is_subscribed %}
+            <button disabled>Да</button>
+            <button name="action" value="unsubscribe">Нет</button>
+        {% else %}
+            <button name="action" value="subscribe">Да</button>
+            <button disabled>Нет</button>
+        {% endif %}
+        </label>
+    </form>
+    {% endif %}
+    <form class="title_filter" action="" method="get">
+        {% csrf_token %}
+<!--        {{ posts.form.as_p }}-->
+        <label>Поиск по названию:</label>
+                <input type="text" name="title__icontains" value=""><br>
+        <input type="submit" value="Найти">
+    </form>
+</div>
+
+<div class="posts_wrapper">
+    {% for post in posts.qs %}
+        <div class="post_wrapper_me">
+            <a class="posts" href="board/{{ post.id }}">
+                От: {{ post.author }} <br>
+                Категория: {{ post.category }} <br>
+                {{ post.title }} <br><br>
+                {{ post.content|striptags|truncatewords:20 }}
+
+                {% for response in responses|get_item:post %}
+                    <div class="post_responses">
+                        <hr>
+                        <p>{{ response.user }}:</p>
+                        <p>{{ response.response_text|truncatewords:10 }}</p>
+                    </div>
+
+                {% endfor %}
+            </a>
+        </div>
+        {% empty %}
+            <h2 style="color: white; margin: 10px;">No posts available.</h2>
+    {% endfor %}
+</div>
+{% if posts %}
+<h3 style="color: white; margin: 10px;">Total amount of posts - {{ posts|length }}</h3>
+{% endif %}
+{% endblock %}

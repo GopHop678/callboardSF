@@ -1,0 +1,59 @@
+{% extends 'main/header.html' %}
+{% load static %}
+
+{% block title %} Posts page {% endblock %}
+
+{% block body %}
+<div class="filter_form_wrapper">
+    <form action="" method="get">
+        <label style="color:black;">Выберите категорию:</label>
+            <select name="category">
+                <option value="">Все категории</option>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category }}</option>
+                {% endfor %}
+            </select>
+        <input type="submit" value="Найти">
+    </form>
+</div>
+<div class="posts_wrapper">
+    {% for post in posts %}
+        <div class="post_wrapper">
+            <a class="posts" href="board/{{ post.id }}">
+                От: {{ post.author }} <br>
+                Категория: {{ post.category }} <br>
+                {{ post.title }} <br><br>
+                {{ post.content|striptags|truncatewords:20 }}
+            </a>
+        </div>
+        {% empty %}
+            <h2 style="color: white; margin: 10px;">No posts available.</h2>
+    {% endfor %}
+</div>
+
+{% if page_obj.paginator.num_pages != 1 %}
+<div class="pagination">
+    {% if page_obj.has_previous %}
+        <a href="?page=1">Первая</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}
+            <span style="text-decoration: none;">{{ num }}</span>
+        {% else %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% if posts %}
+<h3 style="color: white; margin: 10px;">Total amount of posts - {{ posts|length }}</h3>
+{% endif %}
+{% endblock %}

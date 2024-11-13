@@ -1,0 +1,17 @@
+{% extends 'main/header.html' %}
+
+{% block title %} Регистрация нового пользователя {% endblock %}
+
+{% block body %}
+<div class="accounts_content">
+    <form class="signup_form" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+<!--        Email {{ form.email }}<br>-->
+<!--        Username {{ form.username }}<br>-->
+<!--        Password {{ form.password1 }}<br>-->
+<!--        Confirm your password {{ form.password2 }}<br>-->
+        <input type="submit" value="Подтвердить">
+    </form>
+</div>
+{% endblock %}
