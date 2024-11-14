@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin, UserPassesTestMixin, LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_protect
@@ -132,13 +133,24 @@ def my_advertisements(request):
             Subscription.objects.filter(user=request.user).update(is_subscribed=False)
 
     subscribed = Subscription.objects.get(user=request.user)
-    queryset = MyBoardFilter(request.GET, queryset)
+
+    # filtration
+    queryset = MyBoardFilter(request.GET, queryset).qs
+
+    # pagination
+    paginator = Paginator(queryset, 15)
+    page_number = request.GET.get('page')
+    try:
+        page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
 
     return render(request, 'main/me.html', {
-        'posts': queryset,
+        'posts': page_obj,
         'subscribed': subscribed,
         'responses': responses,
-        # 'filter': board_filter,
     })
 
 
