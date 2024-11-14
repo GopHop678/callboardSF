@@ -30,7 +30,7 @@
 </div>
 
 <div class="posts_wrapper">
-    {% for post in posts.qs %}
+    {% for post in posts %}
         <div class="post_wrapper_me">
             <a class="posts" href="board/{{ post.id }}">
                 От: {{ post.author }} <br>
@@ -52,6 +52,29 @@
             <h2 style="color: white; margin: 10px;">No posts available.</h2>
     {% endfor %}
 </div>
+
+{% if posts.paginator.num_pages != 1 %}
+<div class="pagination">
+    {% if posts.has_previous %}
+        <a href="?page=1">Первая</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+    {% endif %}
+
+    {% for num in posts.paginator.page_range %}
+        {% if num == posts.number %}
+            <span style="text-decoration: none;">{{ num }}</span>
+        {% else %}
+            <a href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if posts.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Последняя</a>
+    {% endif %}
+</div>
+{% endif %}
+
 {% if posts %}
 <h3 style="color: white; margin: 10px;">Total amount of posts - {{ posts|length }}</h3>
 {% endif %}
